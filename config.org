@@ -50,31 +50,23 @@
 
 * Пакеты
 
+** use-package
+
+Для удобной установки и настртойки остальных пакетов
+
 #+BEGIN_SRC emacs-lisp
-  (require 'use-package)
-  (setq use-package-always-ensure t)
-  
-  (setq package-archives
-	'(("GNU ELPA"     . "https://elpa.gnu.org/packages/")
-	  ("MELPA Stable" . "https://stable.melpa.org/packages/")
-	  ("MELPA"        . "https://melpa.org/packages/"))
-	package-archive-priorities
-	'(("GNU ELPA"     . 5)
-	  ("MELPA"        . 10)
-	  ("MELPA Stable" . 0)))
-  (package-initialize)
-  (package-refresh-contents)
+ (unless (package-installed-p 'use-package) (package-install 'use-package))
+ (require 'use-package)
 #+END_SRC
 
 ** Evil-mode
 
 #+BEGIN_SRC emacs-lisp
-  ;; Download Evil
-  (unless (package-installed-p 'evil) (package-install 'evil))
 
-  ;; Enable Evil
-  (require 'evil)
-  (evil-mode 1)
+(use-package evil
+  :ensure t
+  :init
+    (evil-mode 1))
 #+END_SRC
 
 ** Theme
@@ -82,9 +74,31 @@
 Я предпочитаю /Gruvbox/
 
 #+BEGIN_SRC emacs-lisp
-  (unless (package-installed-p 'gruvbox-theme) (package-install 'gruvbox-theme))
-  (load-theme 'gruvbox-dark-medium t)
-  (use-package flexoki-themes
+  (use-package gruvbox-theme
     :ensure t
-    :config (load-theme 'flexoki-themes-dark t))
+    :config (load-theme 'gruvbox-dark-medium t))
+;; (use-package flexoki-themes
+;;          :ensure t
+;;          :config (load-theme 'flexoki-themes-dark t))
+#+END_SRC
+
+* Языки
+
+** C#
+
+Пакет =omnisharp=
+
+#+BEGIN_SRC emacs-lisp
+(use-package omnisharp
+  :after company
+  :config
+  (add-hook 'csharp-mode-hook 'omnisharp-mode)
+  (add-to-list 'company-backends 'company-omnisharp))
+#+END_SRC
+
+Комбинации клавиш
+
+#+BEGIN_SRC emacs-lisp
+(define-key omnisharp-mode-map (kbd ".") 'omnisharp-add-dot-and-auto-complete)
+(define-key omnisharp-mode-map (kbd "<C-SPC>") 'omnisharp-auto-complete)
 #+END_SRC
